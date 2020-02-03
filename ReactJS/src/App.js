@@ -8,6 +8,8 @@ import './Main.css'
 
 export default function App() {
 
+  const [devs, setDevs] = useState([]);
+
   const [github_username, setGithubUsername] = useState('');
   const [techs, setTechs] = useState('');
 
@@ -31,6 +33,16 @@ export default function App() {
     );
   }, []);
 
+  useEffect(() => {
+    async function loadDevs() {
+      const response = await api.get('/devs');
+
+      setDevs(response.data);
+    }
+
+    loadDevs();
+  }, []);
+
   async function handleAddDev(e) {
     e.preventDefault();
 
@@ -40,8 +52,11 @@ export default function App() {
       latitude,
       longitude,
     })
-    
-    console.log(response.data);
+
+    setGithubUsername('');
+    setTechs('');
+
+    setDevs([...devs, response.data]);
   }
 
   return (
@@ -103,53 +118,19 @@ export default function App() {
 
       <main>
         <ul>
-          <li className="dev-item">
+          {devs.map(dev => (
+          <li key={dev._id} className="dev-item">
             <header>
-              <img src="https://avatars3.githubusercontent.com/u/34743257?s=460&v=4" alt="Breno Henrique" />
+              <img src={dev.avatar_url} alt={dev.name} />
               <div className="user-info">
-                <strong>Breno Henrique</strong>
-                <span>ReactJS, React Native, Node.js</span>
+                <strong>{dev.name}</strong>
+                <span>{dev.techs.join(', ')}</span>
               </div>
             </header>
-            <p>Sou desenvolvedor full stack com as tecnologias React e JavaScript.</p>
-            <a href="https://github.com/BrenoHenrrique">Acessar perfil do Github</a>
+            <p>{dev.bio}</p>
+            <a href={`https://github.com/${dev.github_username}`}>Acessar perfil do Github</a>
           </li>
-
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars3.githubusercontent.com/u/34743257?s=460&v=4" alt="Breno Henrique" />
-              <div className="user-info">
-                <strong>Breno Henrique</strong>
-                <span>ReactJS, React Native, Node.js</span>
-              </div>
-            </header>
-            <p>Sou desenvolvedor full stack com as tecnologias React e JavaScript.</p>
-            <a href="https://github.com/BrenoHenrrique">Acessar perfil do Github</a>
-          </li>
-
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars3.githubusercontent.com/u/34743257?s=460&v=4" alt="Breno Henrique" />
-              <div className="user-info">
-                <strong>Breno Henrique</strong>
-                <span>ReactJS, React Native, Node.js</span>
-              </div>
-            </header>
-            <p>Sou desenvolvedor full stack com as tecnologias React e JavaScript.</p>
-            <a href="https://github.com/BrenoHenrrique">Acessar perfil do Github</a>
-          </li>
-
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars3.githubusercontent.com/u/34743257?s=460&v=4" alt="Breno Henrique" />
-              <div className="user-info">
-                <strong>Breno Henrique</strong>
-                <span>ReactJS, React Native, Node.js</span>
-              </div>
-            </header>
-            <p>Sou desenvolvedor full stack com as tecnologias React e JavaScript.</p>
-            <a href="https://github.com/BrenoHenrrique">Acessar perfil do Github</a>
-          </li>
+          ))}
         </ul>
       </main>
     </div>

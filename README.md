@@ -1,2 +1,2 @@
-# Github FullStack (Node.js, ReactJS)
+# FullStack (Node.js, ReactJS)
  
